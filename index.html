@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script type="text/javascript" src="markov.js"></script>
+	<script type="text/javascript">
+		/*
+		 * Markov Generator test case: Fetch a wikipedia article via JSONP and use it as input to the markov generator
+		 */
+		window.addEventListener("load", function() {
+			generateFromWikipediaArticle("Abraham Lincoln");
+		},false);
+
+		/* Wikipedia source */
+		function generateFromWikipediaArticle(title) {
+			var safeTitle = title.replace(" ","_"); //TODO: make this robust
+			var wikibase = "http://en.wikipedia.org/w/api.php?action=parse&prop=text&callback=jsonpCallback&format=json&page=";
+			var scriptElement = document.createElement("script");
+			scriptElement.type = "text/javascript";
+			scriptElement.src = wikibase + safeTitle;
+			document.body.appendChild(scriptElement);
+		}
+
+		/* Wikipedia source helper */
+		function jsonpCallback(jsonData) {
+			function cleanHTMLData(data) {
+				var div = document.createElement("div");
+				div.innerHTML = data;
+				return div.textContent || div.innerText
+			}
+			var output = document.getElementById("output");
+			var text = cleanHTMLData(jsonData["parse"]["text"]["*"]);
+
+			var markov = new MarkovGenerator({
+				chainLength : 2
+			});
+
+			markov.loadText(text);
+			var markovOutput = markov.generateWords(100);
+			output.innerHTML = markovOutput;
+		}
+	</script>
+</head>
+<body>
+	<div id="output"></div>
+</div>
+</body>
+</html>
