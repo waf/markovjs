@@ -27,7 +27,7 @@
 			function cleanHTMLData(data) {
 				var div = document.createElement("div");
 				div.innerHTML = data;
-				return div.textContent || div.innerText
+				return div.textContent || div.innerText;
 			}
 			var output = document.getElementById("output");
 			var text = cleanHTMLData(jsonData["parse"]["text"]["*"]);
